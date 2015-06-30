@@ -12,11 +12,13 @@ $(function(){
 
     var clockText = $("<div class='clock-text vert-center col-3-12'></div>")
 
-    var bottomAmLabel = $("<div class='bottom-am-label'></div>")
+    var bottomAmLabel = $("<div class='bottom-am-label col-9-12'></div>")
 
-    var bottomFmLabel = $("<div class='bottom-fm-label'></div>")
+    var bottomFmLabel = $("<div class='bottom-fm-label col-9-12'></div>")
 
     var dots = $("<div class='big-colon'></div>")
+
+
     // Add outershell to body
     $('.container').append(outerShell);
 
@@ -46,9 +48,13 @@ $(function(){
     // Make some colon dots
     var topDot = dots.clone();
         topDot.addClass('top-dot')
+        topDot.addClass('box-shadow')
+
 
     var bottomDot = dots.clone();
         bottomDot.addClass('bottom-dot')
+        bottomDot.addClass('box-shadow')
+
 
     // Put colon into colon-container
     colon.append(topDot);
@@ -62,7 +68,7 @@ $(function(){
     // Add digits in the clock screen
     clockScreen.append(hoursOne);
     clockScreen.append(hoursTwo);
-    clockScreen.append(colon)
+    clockScreen.append(colon);
     clockScreen.append(minutesOne);
     clockScreen.append(minutesTwo);
 
@@ -81,6 +87,13 @@ $(function(){
 
     //Add am/pm lights
     leftAmPm.append(am);
-    leftAmPm.append(pm)
+    leftAmPm.append(pm);
+
+    //AM/FM DIALS -> prepending Text
+    bottomAmLabel.prepend('<span class="radio-text"> AM </span>');
+    bottomFmLabel.prepend('<span class="radio-text"> FM </span>');
+
+    bottomFmLabel.addClass('box-shadow');
+    bottomAmLabel.addClass('box-shadow');
 
 })

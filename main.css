@@ -444,21 +444,26 @@ h1 {
     margin: 0;
     width: 50%;
     height: 50%; /* CUZ the container has a vert-center class*/
-    font-size: 8vh;
-    left: 10%;
+    font-size: 60px;
+    right: 15%;
     transform: translateX(-10%);
     font-family: "Orbitron", sans-serif;
     color: #1FE122;
+    text-shadow: 1px 1px 1px #ff0000;
+
 }
+
 .absolute-center {
     position: absolute;
     top: 50%;
     transform: translate(-50%, -50%);
-    left: 50%;
+    left: 53%;
 }
+
 .border-radius {
     border-radius: 10px;
 }
+
 .clearfix {
     overflow: hidden;
     z-index: 10;
@@ -467,7 +472,7 @@ h1 {
 .container {
     position: absolute;
     width: 540px;
-    height: 200px;
+    height: 150px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -487,6 +492,11 @@ h1 {
     position: relative;
     top: 50%;
     transform: translateY(-50%);
+}
+
+.box-shadow {
+    box-shadow: 1px 1px 1px #ff0000;
+
 }
 /*==============================  Columns  =============================*/
 
@@ -567,7 +577,7 @@ h1 {
 
 .clock-screen{
     color: white;
-    border: 1px dashed #1FE122;
+    /*border: 1px dashed #1FE122;*/
     display: inline-block;
     height: 75%;
     position: absolute;
@@ -612,7 +622,7 @@ h1 {
 .top-dot {
     position: absolute;
     left: 25%;
-    top: 26%;
+    top: 30%;
     border-radius: 2px;
     background-color: #1FE122;
     height: 10px;
@@ -622,7 +632,7 @@ h1 {
 .bottom-dot {
     position: absolute;
     left: 25%;
-    bottom: 20%;
+    bottom: 30%;
     border-radius: 2px;
     background-color: #1FE122;
     height: 10px;
@@ -630,11 +640,27 @@ h1 {
 
 }
 
+.bottom-am-label, .bottom-fm-label {
+    height: 1px;
+    position: absolute;
+    left: 13%;
+    background-color: red;
+}
+
 .bottom-am-label {
+    bottom: 13px;
 
 }
 
 .bottom-fm-label {
-
+    bottom: 25px;
 }
 
+.radio-text {
+    font-size: 10px;
+    font-family: "pt-sans-narrow", sans-serif;
+    color: red;
+    position: absolute;
+    left: -17px;
+    top: -6px;
+}
