@@ -19,6 +19,9 @@ $(function(){
     var dots = $("<div class='big-colon'></div>")
 
 
+//============================== Create the clock architecture ==============================//
+        
+
     // Add outershell to body
     $('.container').append(outerShell);
 
@@ -29,14 +32,17 @@ $(function(){
     innerShell.append(leftAmPm, clockScreen, bottomAmLabel, bottomFmLabel);
     
     // Create digit trackers by cloning clockText var
-    var hoursOne = clockText.clone();
+    var tenHour = clockText.clone();
+        tenHour.append("<h1 class='ten-hour-text'></h1>");
 
-        hoursOne.append("<h1 class='hour-1-text'></h1>");
+    var hour = clockText.clone();
+        hour.append("<h1 class='hour-text'></h1>");
 
-    var hoursTwo = clockText.clone();
+    var tenMin = clockText.clone();
+        tenMin.append("<h1 class='ten-min-text'></h1>");
 
-        hoursTwo.append("<h1 class='hour-2-text'></h1>");
-
+    var min = clockText.clone();
+        min.append("<h1 class='minute-text'></h1>");
 
     // Put colon between digits
     var colon = clockText.clone();
@@ -55,23 +61,22 @@ $(function(){
         bottomDot.addClass('bottom-dot')
         bottomDot.addClass('box-shadow')
 
-
     // Put colon into colon-container
     colon.append(topDot);
     colon.append(bottomDot);
 
-    var minutesOne = clockText.clone();
-        minutesOne.append("<h1 class='minute-1-text'></h1>");
-    var minutesTwo = clockText.clone();
-        minutesTwo.append("<h1 class='minute-2-text'></h1>");
-
     // Add digits in the clock screen
-    clockScreen.append(hoursOne);
-    clockScreen.append(hoursTwo);
+    clockScreen.append(tenHour);
+    clockScreen.append(hour);
     clockScreen.append(colon);
-    clockScreen.append(minutesOne);
-    clockScreen.append(minutesTwo);
+    clockScreen.append(tenMin);
+    clockScreen.append(min);
 
+    // put essentially placeholder text into h1 elements -> AFTER WE APPEND THEM!!!!!
+    $('.ten-hour-text').text('1');
+    $('.hour-text').text('2');
+    $('.ten-min-text').text('0');
+    $('.minute-text').text('0');
 
     // Create two trackers for am / pm
     var am = amPmIndicator.clone();
@@ -91,24 +96,18 @@ $(function(){
     bottomFmLabel.addClass('box-shadow');
     bottomAmLabel.addClass('box-shadow');
 
+//===========================================================================//
+                        /* ~~~ CRAZY ATTEMPT TO ANIMATE CLOCK ~~~ */ 
+//===========================================================================//
 
-
-    //============================= Crazy attempt to animate clock ==============================//
+//============================= The variables ==============================//
     
-    // put text into h1 elements -> AFTER WE APPEND THEM!!!!!
-    $('.hour-1-text').text('1');
-    $('.hour-2-text').text('2');
-    $('.minute-1-text').text('0');
-    $('.minute-2-text').text('0');
-
-    // array for digit numbers
-    var minute = [0,1,2,3,4,5,6,7,8,9]
-    var tenMinute = [0,1,2,3,4,5]
-    var hourArray = [0,1,2,3,4,5,6,7,8,9]
-    var tenHourArray = [" ", 1]
 
 
-    //BLUEPRINT FOR ANIMATING THE CLOCK -> USED FOR MINUTESTWO
+    //blueprint for animating clock -> modified this to become an IFFE to initialize an essentially infinite loop
+        // -> Found on Stack Overflow
+            //Answered Jan 14 2015 at 17:16 USER: dusky
+
         // var fruitColors = ["orange", "blue", "white"];
 
         // function showColor(index) {
@@ -120,16 +119,25 @@ $(function(){
 
         // setTimeout(function() { showColor(0); }, 500);
 
-    // Global variables
+    // array for digit numbers
+    var minute = [0,1,2,3,4,5,6,7,8,9]
+    var tenMinute = [0,1,2,3,4,5]
+    var hourArray = [0,1,2,3,4,5,6,7,8,9]
+    var tenHourArray = [" ", 1]
+
+    // Global variables for digit indices (Need to be outside of timeKeeper fn b/c they would get reset each time we iterate the function)
     var tenMinuteIndex = 0;
     var hourIndex = 2; //-> Start at 2 (cuz we start @ 12:00)
     var tenHourIndex = 1;
     var amToggle = false;
 
-    // THIS AFFECTS the time based on the tenMinute digit (FURTHEST RIGHT)
-    function timeKeeper(indexMin) {
+//============================== The Function ==============================//
+        
+    // timeKeeper is an IIFE that animates the clock based on the minutes digit (furthest right)
+        //-> Needs to be named so that we can call it below to keep the loop going
+    (function timeKeeper(indexMin) {
 
-        var indexMin;
+        // indexMin is the index of the minute array that we are currently on --> Should always start at 0
 
         // Reset minute index when it reaches the end of the minutes array --> this is before the bottom so we never exit the loop
         if (indexMin === minute.length) { // -> this makes sure we get thru the whole array
@@ -138,13 +146,13 @@ $(function(){
             
             // set tenMinuteIndex back to 0 after we finish an hour
                 // also increment the hourIndex
-            if (tenMinuteIndex >= tenMinute.length) {
+            if (tenMinuteIndex === tenMinute.length) {
 
                 tenMinuteIndex = 0; // -> reset tenMinute index
 
                 hourIndex += 1;  // increment the hour since we finished a tenMinute loop (1 hr.)
 
-                // This is dealing with 12:00 -> basically setting hour to 1 (for 1:00, since that comes after 12:00) and toggling the tenHour digit to either be nothing or 
+                // This is dealing with what happens after 12:00 -> basically setting hour to 1 and toggling the tenHour digit to disappear
                 if ( (hourIndex === 3) && (tenHourIndex === 1) ){
 
                     hourIndex = 1; // -> set hour index to 1
@@ -152,45 +160,49 @@ $(function(){
                     tenHourIndex = 0; // -> set ten hour index to 0 (essentially remove the digit from the display since we are in single digit time now)
                 }
 
-                $('.hour-2-text').text(hourArray[hourIndex]);
+                // after going thru logic, we set our hour and tenHour digits
+                $('.hour-text').text(hourArray[hourIndex]);
 
-                $('.hour-1-text').text(tenHourArray[tenHourIndex]);
+                $('.ten-hour-text').text(tenHourArray[tenHourIndex]);
             }
 
             // reset hour loop when we reach the end of the array --> Switching stuff when we get to the 10's
-            if (hourIndex > hourArray.length - 1 ) {
+            if (hourIndex === hourArray.length ) { // -> hour digit is 9
 
-                hourIndex = 0; // -> reset hourArray to beginning (gives us 0)
                 tenHourIndex = 1; // -> move tenHourArray to 1 (gives us 1)
+                hourIndex = 0; // -> reset hourArray to beginning (gives us 0)
 
                 // Have to set/overwrite the tenHour and hour digits here
-                $('.hour-2-text').text(hourArray[hourIndex]);
+                $('.ten-hour-text').text(tenHourArray[tenHourIndex]);
 
-                $('.hour-1-text').text(tenHourArray[tenHourIndex]);
+                $('.hour-text').text(hourArray[hourIndex]);
             }
             
-            // increment tenMinutes each time 
-            $('.minute-1-text').text( tenMinute[tenMinuteIndex] );
+            // increment tenMinutes each time we finish a minute loop
+            $('.ten-min-text').text( tenMinute[tenMinuteIndex] );
 
             // set minute Index back to 0 since we finished ten minutes
             indexMin = 0;
         }
 
-        // when looping the tenMinute digit
-        // This is really never false (check first conditional at top of function), the clock will continue forever
+        // looping the minute digit
+        // This is really never false (check first conditional at top of function), the clock will continue forever 
+        // THIS SHOULD BE ITS OWN FUNCTION -> it is what increments the minute digit
         if ( indexMin < minute.length ) {
 
             // console.log(minute[index]);
 
-            $('.minute-2-text').text(indexMin);
+            $('.minute-text').text(indexMin);
 
             setTimeout(function() {
 
-                timeKeeper(indexMin + 1);}, 60000) // -> Does stuff every 60 seconds
+                timeKeeper(indexMin + 1);}, 100) // -> Does stuff every X seconds, can set to whatever, it's set low now just so we can see the clock work.
+                // Set to 60000 to simulate real clock
         }
 
-        // toggle am/pm at exactly 12:00
 
+        // -> THIS SHOULD BE ITS OWN FUNCTION
+        // toggle am/pm at exactly 12:00
         if ( (tenHourArray[tenHourIndex] === 1) && (hourArray[hourIndex] === 2) && tenMinute[tenMinuteIndex] === 0 && minute[indexMin] === 0 ) {
 
             amToggle = !amToggle;
@@ -209,13 +221,12 @@ $(function(){
             am.show();
             pm.hide();
         }
-    }
+    })(0); //-> IIFE
 
-    setTimeout(function() { 
-        timeKeeper(0);}, 60000); // -> Does stuff every 60 seconds
+    // setTimeout(function() { 
+    //     timeKeeper(0);}, 60000); // -> Does stuff every 60 seconds
 
 
 });
-
 
 // -> Victory
